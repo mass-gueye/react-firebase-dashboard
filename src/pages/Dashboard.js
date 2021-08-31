@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
 import "./Dashboard.css";
-import { auth, db, logout } from "./firebase";
+import { auth, db, logout } from "../firebase";
 
 function Dashboard() {
   const [user, loading, error] = useAuthState(auth);
@@ -17,6 +17,7 @@ function Dashboard() {
         .get();
       const data = await query.docs[0].data();
       setName(data.name);
+      // console.log(data);
     } catch (err) {
       console.error(err);
       alert("An error occured while fetching user data");
@@ -28,18 +29,22 @@ function Dashboard() {
     if (!user) return history.replace("/");
 
     fetchUserName();
-  }, [user, loading]);
+  }, [user, loading, history]);
 
   return (
     <div className="dashboard">
-      <div className="dashboard__container">
-        Logged in as
-        <div>{name}</div>
-        <div>{user?.email}</div>
-        <button className="dashboard__btn" onClick={logout}>
-          Logout
-        </button>
-      </div>
+      {loading ? (
+        "LOADING"
+      ) : (
+        <div className="dashboard__container">
+          Logged in as
+          <div>{name}</div>
+          <div>{user?.email}</div>
+          <button className="dashboard__btn" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 }
