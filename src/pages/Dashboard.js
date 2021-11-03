@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
 import "./Dashboard.css";
@@ -28,7 +28,7 @@ function Dashboard() {
     if (loading) return;
     if (!user) return history.replace("/");
 
-    fetchUserName();
+    fetchUserName()
   }, [user, loading, history]);
 
   return (

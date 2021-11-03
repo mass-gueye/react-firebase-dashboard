@@ -15,6 +15,8 @@ import { FcGoogle } from "react-icons/fc";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [name, setName] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [toggle, setToggle] = useState(false);
@@ -22,19 +24,25 @@ export default function SignIn() {
 
   const register = () => {
     if (!name) alert("Please enter name");
-    registerWithEmailAndPassword(name, email, password);
+    registerWithEmailAndPassword(name, newEmail, newPassword);
+    alert('created!!!')
+    togglePanel()
   };
+  const signIn = (email, password) => {
+    signInWithEmailAndPassword(email, password)
+    history.push('/dashboard')
+  }
 
   const togglePanel = (e) => {
     setToggle(!toggle);
   };
-  useEffect(() => {
-    if (loading) {
-      // maybe trigger a loading screen
-      return;
-    }
-    if (user) history.replace("/dashboard");
-  }, [user, loading]);
+  // useEffect(() => {
+  //   if (loading) {
+  //     // maybe trigger a loading screen
+  //     return;
+  //   }
+  //   if (user) history.replace("/dashboard");
+  // }, [user, loading,history]);
 
   return (
     <div className="body">
@@ -44,7 +52,7 @@ export default function SignIn() {
           toggle ? "container-signup right-panel-active" : "container-signup"
         }
         id="container-signup"
-      >
+      > {error && <p style={{background:'red'}}>{error}</p>}
         <div className="form-container sign-up-container">
           <div className="c-form">
             <h1>Create Account</h1>
@@ -65,8 +73,8 @@ export default function SignIn() {
             <input
               type="email"
               placeholder="E-mail Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
               name="email"
               required
             />
@@ -75,11 +83,11 @@ export default function SignIn() {
               placeholder="Password"
               name="password"
               autoComplete="true"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               required
             />
-            <button onClick={register} disabled={!email || !password}>
+            <button onClick={register} disabled={!newEmail || !newPassword}>
               Sign Up
             </button>
           </div>
@@ -87,6 +95,7 @@ export default function SignIn() {
         <div className="form-container sign-in-container">
           <div className="c-form">
             <h1>Sign in</h1>
+            {error && <p>{error}</p>}
             <div className="social-container">
               <IconButton onClick={signInWithGoogle}>
                 <FcGoogle size={50} />
@@ -112,7 +121,7 @@ export default function SignIn() {
             />
             <Link to="/reset">Forgot Password</Link>
             <button
-              onClick={() => signInWithEmailAndPassword(email, password)}
+              onClick={() => signIn(email, password)}
               disabled={!email || !password}
             >
               Sign In
